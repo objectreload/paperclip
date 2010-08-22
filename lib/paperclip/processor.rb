@@ -41,9 +41,11 @@ module Paperclip
   # http://marsorange.com/archives/of-mogrify-ruby-tempfile-dynamic-class-definitions
   class Tempfile < ::Tempfile
     # Replaces Tempfile's +make_tmpname+ with one that honors file extensions.
+    @@attachment_increment = 1
     def make_tmpname(basename, n)
+      @@attachment_increment = (@@attachment_increment + 1) % 65535
       extension = File.extname(basename)
-      sprintf("%s,%d,%d%s", File.basename(basename, extension), $$, n.to_i, extension)
+      sprintf("%s,%d,%d%s", File.basename(basename, extension), $$, @@attachment_increment+n.to_i, extension)
     end
   end
 end
